@@ -1,0 +1,15 @@
+log
+*.log
+
+pids
+*.pid
+*.seed
+
+build/
+
+node_modules
+
+*.DS_Store
+*~
+*.swp
+*.bak

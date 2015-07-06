@@ -1,0 +1,9 @@
+{
+  "title": "哈尔滨工业大学出国(境)管理系统",
+  "root" : "http://localhost",
+  "port" : 3000,
+  "author" : {
+    "org" : "Pureweber",
+    "org_site" : "http://www.pureweber.com"
+  }
+}
