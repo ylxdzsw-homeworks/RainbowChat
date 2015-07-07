@@ -3,13 +3,16 @@ var gulp         = require("gulp"),
 	cache        = require("gulp-cached"),
 	coffee       = require("gulp-coffee"),
 	coffeelint   = require("gulp-coffeelint"),
-	cjsx         = require("gulp-cjsx"),
 	less         = require("gulp-less"),
 	minifyCss    = require("gulp-minify-css"),
 	notify       = require("gulp-notify"),
 	rename       = require("gulp-rename"),
 	uglify       = require("gulp-uglify"),
 	sourcemaps   = require("gulp-sourcemaps"),
+	browserify   = require("browserify"),
+	source       = require("vinyl-source-stream"),
+	buffer       = require("vinyl-buffer"),
+	cjsxify      = require("cjsxify"),
 	del          = require("del"),
 	fs           = require('fs');
 
@@ -47,12 +50,19 @@ var helper = {
 	},
 	cjsx: function(globs, dest){
 		return function(){
-			return gulp.src(globs)
-				.pipe(cache('cjsx'))
+			var b = browserify({
+				entries: globs,
+				debug: true,
+				transform: [cjsxify]
+			});
+
+			return b.bundle()
+				.pipe(source('main.js'))
+				.pipe(buffer())
+				//.pipe(cache('cjsx'))
 				.pipe(sourcemaps.init())
-					.pipe(cjsx({bare:true}))
-					.on('error', console.log)
 					.pipe(uglify())
+					.on('error', console.log)
 				.pipe(sourcemaps.write())
 				.pipe(gulp.dest(dest))
 				.pipe(notify({message: "a cjsx task complete"}));
@@ -73,7 +83,7 @@ var helper = {
 		midl: "middleware/**/*.coffee",
 		util: "util/*.coffee",
 		page_script: "page/**/*.coffee",
-		page_cjsx: "page/**/*.cjsx",
+		page_cjsx: "page/main.cjsx",
 		page_style: "page/**/*.less",
 		page_other: ['page/**/*','!page/**/*.coffee', '!page/**/*.less', "!page/**/*.cjsx"],
 		config_script: "config/*.coffee",
