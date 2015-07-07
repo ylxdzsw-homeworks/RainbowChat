@@ -23,6 +23,7 @@ var helper = {
 				.pipe(rename({extname:".js"}))
 				.pipe(sourcemaps.init())
 					.pipe(coffee())
+					.on('error', console.log)
 					.pipe(uglify())
 				.pipe(sourcemaps.write())
 				.pipe(gulp.dest(dest))
@@ -36,7 +37,8 @@ var helper = {
 				.pipe(rename({extname:'.css'}))
 				.pipe(sourcemaps.init())
 					.pipe(less())
-					.pipe(autoprefixer({browsers:['last 2 versions', 'ie 6-8']}))
+					.on('error', console.log)
+					.pipe(autoprefixer({browsers:['last 2 versions']}))
 					.pipe(minifyCss())
 				.pipe(sourcemaps.write())
 				.pipe(gulp.dest(dest))
@@ -49,6 +51,7 @@ var helper = {
 				.pipe(cache('cjsx'))
 				.pipe(sourcemaps.init())
 					.pipe(cjsx({bare:true}))
+					.on('error', console.log)
 					.pipe(uglify())
 				.pipe(sourcemaps.write())
 				.pipe(gulp.dest(dest))
@@ -67,7 +70,7 @@ var helper = {
 		root: "*.coffee",
 		bin: "bin/*.coffee",
 		rest: "rest/**/*.coffee",
-		midl: "midl/**/*.coffee",
+		midl: "middleware/**/*.coffee",
 		util: "util/*.coffee",
 		page_script: "page/**/*.coffee",
 		page_cjsx: "page/**/*.cjsx",
@@ -90,7 +93,7 @@ gulp.task('bin', helper.coffee(helper.globs.bin, "build/bin/"));
 
 gulp.task('rest', helper.coffee(helper.globs.rest, "build/rest/"));
 
-gulp.task('midl', helper.coffee(helper.globs.midl, "build/midl/"));
+gulp.task('midl', helper.coffee(helper.globs.midl, "build/middleware/"));
 
 gulp.task('util', helper.coffee(helper.globs.util, "build/util/"));
 
