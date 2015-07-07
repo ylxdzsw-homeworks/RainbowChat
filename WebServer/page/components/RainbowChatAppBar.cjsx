@@ -9,5 +9,5 @@ module.exports = React.createClass
 		muiTheme: ThemeManager.getCurrentTheme()
 	render: ->
 		<mui.AppBar title="RainbowChat"
-			iconClassNameLeft="menu"
+			iconElementLeft={<i className="material-icons">menu</i>}
 			onLeftIconButtonTouchTap={->console.log 'fuck'}/>

@@ -1,13 +1,4 @@
 RainbowChat
 ===========
 
-### Installation
-```
-    $ npm install
-    $ gulp make
-```
-
-### Run
-```
-    $ node ./build/start
-```
+See correspoding_subdirectoris/README.md for usage

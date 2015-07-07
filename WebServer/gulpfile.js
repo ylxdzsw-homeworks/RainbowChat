@@ -51,7 +51,7 @@ var helper = {
 	cjsx: function(globs, dest){
 		return function(){
 			var b = browserify({
-				entries: globs,
+				entries: 'page/main.cjsx',
 				debug: true,
 				transform: [cjsxify]
 			});
@@ -83,7 +83,7 @@ var helper = {
 		midl: "middleware/**/*.coffee",
 		util: "util/*.coffee",
 		page_script: "page/**/*.coffee",
-		page_cjsx: "page/main.cjsx",
+		page_cjsx: "page/**/*.cjsx",
 		page_style: "page/**/*.less",
 		page_other: ['page/**/*','!page/**/*.coffee', '!page/**/*.less', "!page/**/*.cjsx"],
 		config_script: "config/*.coffee",
