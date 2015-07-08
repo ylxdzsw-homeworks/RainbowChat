@@ -1,4 +1,5 @@
 import sublime, sublime_plugin
+import urllib2, urllib, json
 
 
 class UserInfo():
@@ -19,8 +20,13 @@ help_message = 'Please input  \'!help\'  and press enter if you want more inform
 plugin_name = 'rainbowchat'
 file_suffix = 'rainbowchat'
 welcome_info = 'Welcome To RainBowChat!\n'
-version = '0.11'
+version = 'rainbowchat version:' + '0.0.0'
+help_format = '\'!help\''
+register_format = '\'username@password@new\''
+login_format = '\'username@password\''
+chat_format = '\'!chatwith username\''
 edit_name = ''
+
 
 
 class RainbowCommand(sublime_plugin.TextCommand):
@@ -31,12 +37,14 @@ class RainbowCommand(sublime_plugin.TextCommand):
             show_login_panel()
 
 
-def show_input_panel(caption=user.username, content=''):
+def show_input_panel(caption = None, content=''):
+    if caption == None:
+        caption = user.username
     sublime.active_window().show_input_panel(caption, content, input, None, None)
 
 
 def show_login_panel():
-    init_text = 'format:login:username@password    register:username@password@New'
+    init_text = 'format:login:'+login_format +'    register:'+ register_format
     sublime.active_window().show_input_panel('Login:', init_text, login_register_done, login_register_onchange, None)
 
 
@@ -52,7 +60,12 @@ def login_register_done(text):
 
 
 def login_register_onchange(text):
-    pass
+    if len(text.split('@'))==2 :
+        sublime.status_message('it is a correct login format')
+    elif len(text.split('@'))==3 and text.split('@')[2]=='new':
+        sublime.status_message('it is a correct register format')
+    else:
+        sublime.status_message('it is not a correct format:the correct format:'+login_format+'or'+register_format)
 
 
 def checklogin():
@@ -73,8 +86,8 @@ def login(username, password):
         user.login_state = True
         show_input_panel()
     else:
-        sublime.active_window().message_dialog('login failed,maybe username or password is wrong')
         show_login_panel()
+        sublime.active_window().message_dialog('login failed,maybe username or password is wrong')
 
 
 def check_user():
@@ -82,15 +95,28 @@ def check_user():
 
 
 def input(text):
-    viewname = sublime.active_window().active_view().name()
-    if text[0] == '!' and len(text) != 1:
+    if check_command(text):
         command(text[1:])
-    elif len(viewname.split('.')) > 1 and viewname.split('.')[1] == file_suffix:
+    elif check_chatview():
         chat(text)
     else:
-        sublime.message_dialog(sublime.active_window().active_view().name())
         show_input_panel()
-        sublime.error_message('please start chating with someone:\nformat:\'!chatwith username\'\n' + help_message)
+        sublime.error_message('please start chatting with someone:\nformat:'+chat_format+'\n' + help_message)
+
+
+def check_command(text):
+    if text[0] =='!' and len(text) != 1 :
+        return True
+    else:
+        return False
+
+
+def check_chatview():
+    viewname = sublime.active_window().active_view().file_name()
+    if len(viewname.split('.')) > 1 and viewname.split('.')[1] == file_suffix:
+        return True    
+    else :
+        return False
 
 
 def command(commandstr):
@@ -98,20 +124,22 @@ def command(commandstr):
     if commands[0] == 'chatwith':
         if len(commands) == 1:
             sublime.error_message("you must point out one person at least!")
+            show_input_panel()
         elif commands[1] != ' ':
             startchat(commands[1])
     elif commands[0] == 'help':
         help()
-    show_input_panel()
+        show_input_panel()
 
 
 def startchat(username):
     chatter = sublime.active_window().open_file(username + '.' + file_suffix)
+    chatter.set_read_only(False)
     currentRegion = chatter.visible_region()
     edit = chatter.begin_edit()
     if currentRegion.begin() == currentRegion.end():
-        chatter.insert(edit, 0,
-                       welcome_info + 'rainbowchat version:' + version + '\n' + 'want more help :please input \'!help\'\n')
+        chatter.insert(edit, 0, welcome_info + version + '\n' + 'want more help :please input '+help_format+'\n')
+    chatter.set_read_only(True)
     show_input_panel()
 
 
@@ -134,5 +162,5 @@ def chat(message):
 
 def help():
     chatter = sublime.active_window().open_file('help-' + file_suffix)
-
+    chatter.set_read_only(True)
     return ''
