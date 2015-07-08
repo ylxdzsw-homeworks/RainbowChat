@@ -37,7 +37,7 @@ var helper = {
 		return function(){
 			return gulp.src(globs)
 				.pipe(cache('less'))
-				.pipe(rename({extname:'.css'}))
+				//.pipe(rename({extname:'.css'}))
 				.pipe(sourcemaps.init())
 					.pipe(less())
 					.on('error', console.log)
