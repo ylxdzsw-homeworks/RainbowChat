@@ -16,11 +16,4 @@ ThemeManager.setTheme ThemeManager.types.DARK
 
 React.render <RainbowChatAppBar />, document.getElementById 'appbar'
 
-React.render <RainbowChatWelcome
-	onLogin={(e) ->
-		console.log 'fuck'+e
-	}
-	onSignup={(e) ->
-		console.log e
-	}
-	/>, document.getElementById 'welcome'
+React.render <RainbowChatWelcome />, document.getElementById 'welcome'

@@ -13,7 +13,7 @@ router.delete '/auth',        midl.auth.loginRequired,  rest.auth.logout
 
 # Message
 router.get    '/msg',         midl.auth.loginRequired,  rest.msg.queryMessage
-router.get    '/msg/latest',  midl.auth.loginRequired,  rest.msg.listenMessage
+#router.get    '/msg/latest',  midl.auth.loginRequired,  rest.msg.listenMessage
 router.post   '/msg',         midl.auth.loginRequired,  rest.msg.sendMessage
 
 # Page
