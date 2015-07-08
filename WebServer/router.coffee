@@ -4,8 +4,16 @@ midl = require "./middleware/index.js"
 conf = require "./config/index.js"
 
 # User
-router.get    '/user/:id',    rest.user.getUserInfo
+router.get    '/user/:id',    midl.parser.parseID,      rest.user.getUserInfo
 router.post   '/user',        rest.user.createNewUser
+
+# Auth
+router.post   '/auth',        rest.auth.login
+router.delete '/auth',        midl.auth.loginRequired,  rest.auth.logout
+
+# Message
+router.get    '/msg',         midl.auth.loginRequired,  rest.msg.queryMessage
+router.get    '/msg/latest',  midl.auth.loginRequired,  rest.msg.listenMessage
 router.post   '/msg',         midl.auth.loginRequired,  rest.msg.sendMessage
 
 # Page

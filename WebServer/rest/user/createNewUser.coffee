@@ -4,6 +4,7 @@ module.exports = (index, kit) ->
 		return next kit.util.makeError 400, "try to create a new user without enough infomation", "LACKOF_INFO" if not infos
 
 		# TODO: do more validation here
+		return next kit.util.makeError 400, "username too short", "USERNAME_TOOSHORT" if not id.length > 4
 
 		kit.db.get('user').insert {_id:id, password, role: 'user'}, (err, doc) ->
 			if err?

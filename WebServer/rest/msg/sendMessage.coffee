@@ -7,14 +7,8 @@ module.exports = (index, kit) ->
 		kit.db.get('msg').insert {to,type,content,from:req.session.username,date:now}, (err, doc) ->
 			return next kit.util.makeError 500 if err?
 			if kit.pool[to]?
-				i.send {to,type,content,date} for i in kit.pool[to]
-				kit.pool[to].lastUpdate.time = now
-			else
-				kit.pool =
-					lastUpdate:
-						time: now
-						content: content
-					subscriber: []
-				# subscriber compare req's time and lastUpdateDate(if exists), and decide if hold and wait or do a database query
-
+				i.send {to,type,content,date} for i in kit.pool[to].subscriber
+			kit.pool[to] =
+				lastUpdate: now
+				subscriber: []
 			res.sendStatus 200

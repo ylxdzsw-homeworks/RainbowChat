@@ -122,12 +122,14 @@ gulp.task('config_json', helper.copy(helper.globs.config_json, 'build/config/'))
 gulp.task('asset', helper.copy(helper.globs.asset, 'build'));
 
 gulp.task('log', function(){
-	return fs.mkdir('build/log',0777,function(err){
-		if(err){
-			notify(err);
-		}else{
-			notify("creating log complete");
-		}
+	return fs.mkdir('build',0777,function(err){
+		fs.mkdir('build/log',0777,function(err){
+			if(err){
+				notify(err);
+			}else{
+				notify("creating log complete");
+			}
+		});
 	});
 });
 
