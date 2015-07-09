@@ -1,0 +1,11 @@
+RainBowChat Version£º0.0.0
+command£º
+	!{chatwith|ch} {username}#your will start a new tab if your current tab is not a correct chat tab ;username is the man you want to talk
+	
+	!open {filename} #you could open a file by the filename
+	
+	!relogin #relogin, you could relogin with another account 
+	
+	!logout #logout, you will close rainbowchat
+	
+	!
