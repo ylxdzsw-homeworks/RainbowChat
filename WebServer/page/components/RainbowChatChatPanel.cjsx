@@ -3,10 +3,6 @@ mui   = require 'material-ui'
 ThemeManager = new mui.Styles.ThemeManager()
 
 module.exports = React.createClass
-	childContextTypes:
-		muiTheme: React.PropTypes.object
-	getChildContext: ->
-		muiTheme: ThemeManager.getCurrentTheme()
 	getInitialState: ->
 		chatHistory: []
 	onRetrive: ->

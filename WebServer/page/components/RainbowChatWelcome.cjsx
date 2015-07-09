@@ -14,12 +14,11 @@ LoginDialog = React.createClass
 			data:
 				username: @state.username
 				password: @state.password
-			success: (a,b,c) ->
-				console.log a
-				console.log b
-				console.log c
+			success: (data) ->
+				@props.onLoginSuccess "Welcome #{data}", "OK"
+				@dismiss()
 			error: (a,b,c) ->
-				alert "fuck"
+				@props.onLoginError "SomeThing Wroung", "Gotcha"
 
 	onUsernameChange: (e) ->
 		@setState username: e.target.value
@@ -30,6 +29,9 @@ LoginDialog = React.createClass
 	# Method
 	show: ->
 		@refs.dialog.show()
+
+	dismiss: ->
+		@refs.dialog.dismiss()
 
 	render: ->
 		<mui.Dialog
@@ -138,10 +140,6 @@ module.exports = React.createClass
 		@refs.loginDialog.show()
 	onSignupClick: ->
 		@refs.signupDialog.show()
-	onLoginSubmit: (cb) ->
-		@refs.loginDialog.dismiss()
-	onSignupSubmit: (cb) ->
-		@refs.signupDialog.dismiss()
 	render: ->
 		<div>
 			<mui.RaisedButton label="Log in" secondary onTouchTap={@onLoginClick}/>

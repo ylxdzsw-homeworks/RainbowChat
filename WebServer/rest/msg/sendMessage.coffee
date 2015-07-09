@@ -7,7 +7,7 @@ module.exports = (index, kit) ->
 		kit.db.get('msg').insert {to,type,content,from:req.session.userinfo.username,date:now}, (err, doc) ->
 			return next kit.util.makeError 500 if err?
 			if kit.pool[to]?
-				i.send {to,type,content,date} for i in kit.pool[to].subscriber
+				i.send {to,type,content,from:req.session.userinfo.username,date:now} for i in kit.pool[to].subscriber
 			kit.pool[to] =
 				lastUpdate: now
 				subscriber: []
