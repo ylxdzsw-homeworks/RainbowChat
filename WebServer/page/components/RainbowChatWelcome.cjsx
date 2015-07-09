@@ -3,16 +3,59 @@ mui   = require 'material-ui'
 ThemeManager = new mui.Styles.ThemeManager()
 
 LoginDialog = React.createClass
+	getInitialState: ->
+		username: ''
+		password: ''
+
+	onSubmit: ->
+		$.ajax
+			method: "POST"
+			url: "/auth"
+			data:
+				username: @state.username
+				password: @state.password
+			success: (a,b,c) ->
+				console.log a
+				console.log b
+				console.log c
+			error: (a,b,c) ->
+				alert "fuck"
+
+	onUsernameChange: (e) ->
+		@setState username: e.target.value
+
+	onPasswordChange: (e) ->
+		@setState password: e.target.value
+
+	# Method
+	show: ->
+		@refs.dialog.show()
+
 	render: ->
 		<mui.Dialog
 			title="Log in"
 			actions={[
 				{text: 'Cancel'},
-				{text: 'Submit', onTouchTap: @onLoginSubmit}
+				{text: 'Submit', onTouchTap: @onSubmit}
 			]}
 			actionFoucus="submit"
-			ref="loginDialog"
+			ref="dialog"
 			modal>
+
+			<mui.TextField
+				floatingLabelText="username"
+				onChange={@onUsernameChange}
+				errorText={if @state.username.length < 4 then "username too short"}
+				/>
+
+			<mui.TextField
+				floatingLabelText="password"
+				onChange={@onPasswordChange}
+				errorText={if not @state.password.length then "password cannot be empty"}
+				>
+				<input type="password" />
+			</mui.TextField>
+
 		</mui.Dialog>
 
 SignupDialog = React.createClass
@@ -28,8 +71,6 @@ SignupDialog = React.createClass
 			data:
 				username: @state.username
 				password: @state.password
-			header:
-				'Content-Type': 'Application/json'
 			success: (a,b,c) ->
 				console.log a
 				console.log b
