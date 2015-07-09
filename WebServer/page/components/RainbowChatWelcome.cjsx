@@ -54,19 +54,19 @@ LoginDialog = React.createClass
 			ref="dialog"
 			modal>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="username"
 				onChange={@onUsernameChange}
 				errorText={if not @state.username.length then "username cannot leave empty"}
-				/>
+				/></div>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="password"
 				onChange={@onPasswordChange}
 				errorText={if not @state.password.length then "password cannot leave empty"}
 				>
 				<input type="password" />
-			</mui.TextField>
+			</mui.TextField></div>
 
 		</mui.Dialog>
 
@@ -116,28 +116,28 @@ SignupDialog = React.createClass
 			ref="dialog"
 			modal>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="username"
 				onChange={@onUsernameChange}
 				hintText="cannot less than 4 letters"
 				errorText={if @state.username.length < 4 then "username too short"}
-				/>
+				/></div>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="password"
 				onChange={@onPasswordChange}
 				errorText={if not @state.password.length then "password cannot be empty"}
 				>
 				<input type="password" />
-			</mui.TextField>
+			</mui.TextField></div>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="reinput password"
 				onChange={@onRepasswordChange}
 				errorText={if @state.repassword isnt @state.password then "password not match"}
 				>
 				<input type="password" />
-			</mui.TextField>
+			</mui.TextField></div>
 
 		</mui.Dialog>
 

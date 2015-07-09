@@ -46,29 +46,55 @@ App = React.createClass
 		@setState currentChatter: username
 		x = @state.chatters[username]
 		if not x.message?
+			@queryHistory username
+		if not x.listening
+			@startListen username
+			x.listening = yes
+			@setState chatters: @state.chatters
+	
+	queryHistory: (username,cb=->) ->
+		$.ajax
+			method: 'GET'
+			url: "/msg"
+			data: {username}
+			success: (data) =>
+				x = @state.chatters[username]
+				x.message = data
+				x.lastUpdate = _.max data, (x) -> new Date x.date
+				@setState chatters: @state.chatters
+				cb data
+			error: (res) =>
+				if res.status isnt 404
+					@setState snack: {message:"unhandled bug",action:"OH SHIT!",onClick:@refs.snack.dismiss}
+					@refs.snack.show()
+				cb null
+	startListen: (username) ->
+		listen = =>
+			return 'done' if not @state.chatters[username]?
 			$.ajax
 				method: 'GET'
-				url: "/msg"
-				data: {username}
+				url: "/msg/latest"
+				data:
+					date: (@state.chatters[username].lastUpdate ? new Date()).toJSON()
+					username: username
 				success: (data) =>
-					x.message = data
-					x.lastUpdate = _.max data, (x) -> new Date x.date
-					@setState chatters: @state.chatters
+					if data.err is "SYNC_FAILED"
+						@queryHistory listen
+					else
+						if @state.chatters[username].message? then @state.chatters[username].message.push data else @state.chatters[username].message = [data]
+						@setState chatters: @state.chatters
+						setTimeout listen, 0
 				error: (res) =>
-					if res.status isnt 404
-						@setState snack: {message:"unhandled bug",action:"OH SHIT!",onClick:@refs.snack.dismiss}
-	
-	startListen: ->
-		listen = ->
-			for own k,v of @state.chatters
-				$.ajax
-					method: 'GET'
-					url: "/msg/latest"
-					data:
-						date: v.lastUpdate ? new Date()
-						username: k
-					# TODO HERE
-
+					switch res.status
+						when 400
+							@setState snack: {message:"unhandled bug",action:"OH SHIT!",onClick:@refs.snack.dismiss}
+							@refs.snack.show()
+						else
+							@setState snack: {message:"unhandled bug",action:"OH SHIT!",onClick:@refs.snack.dismiss}
+							@refs.snack.show()
+					@state.chatters[username].listening = no
+					@setState chatters: @state.chatters
+		setTimeout listen, 0
 	render: ->
 		<div>
 			<RainbowChatAppBar
