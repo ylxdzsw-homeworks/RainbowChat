@@ -1,7 +1,8 @@
 React = require 'react'
 mui = require 'material-ui'
-RainbowChatAppBar  = require './components/RainbowChatAppBar.cjsx'
-RainbowChatWelcome = require './components/RainbowChatWelcome.cjsx'
+RainbowChatAppBar     = require './components/RainbowChatAppBar.cjsx'
+RainbowChatWelcome    = require './components/RainbowChatWelcome.cjsx'
+RainbowChatInputPanel = require './components/RainbowChatInputPanel.cjsx'
 
 # This is required by material-ui
 injectTapEventPlugin = require "react-tap-event-plugin"
@@ -17,3 +18,5 @@ ThemeManager.setTheme ThemeManager.types.DARK
 React.render <RainbowChatAppBar />, document.getElementById 'appbar'
 
 React.render <RainbowChatWelcome />, document.getElementById 'welcome'
+
+React.render <RainbowChatInputPanel />, document.getElementById 'input-panel'
