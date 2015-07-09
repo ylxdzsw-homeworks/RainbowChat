@@ -1,5 +1,5 @@
 kit =
-	db: require('monk')("localhost/international")
+	db: require('monk')("localhost/RainbowChat")
 	util: require('../util/index')
 	config: require('../config/index')
 	pool: {}
