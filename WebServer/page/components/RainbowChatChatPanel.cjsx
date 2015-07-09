@@ -3,8 +3,6 @@ mui   = require 'material-ui'
 ThemeManager = new mui.Styles.ThemeManager()
 
 module.exports = React.createClass
-	getInitialState: ->
-		chatHistory: []
 	onRetrive: ->
 		$.ajax
 			method: 'GET'
@@ -20,7 +18,7 @@ module.exports = React.createClass
 	render: ->
 		<div>
 			<mui.Menu
-				menuItems={@state.chatHistory.map (x) ->
+				menuItems={@props.message.map (x) ->
 					text: x.from
 					data: x.content
 				}

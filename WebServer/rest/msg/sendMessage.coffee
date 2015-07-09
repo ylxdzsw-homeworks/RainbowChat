@@ -6,9 +6,10 @@ module.exports = (index, kit) ->
 		now = new Date()
 		kit.db.get('msg').insert {to,type,content,from:req.session.userinfo.username,date:now}, (err, doc) ->
 			return next kit.util.makeError 500 if err?
-			if kit.pool[to]?
-				i.send {to,type,content,from:req.session.userinfo.username,date:now} for i in kit.pool[to].subscriber
-			kit.pool[to] =
+			kit.pool[to] ?= {}
+			if kit.pool[to][from]?
+				i.send {to,type,content,from:req.session.userinfo.username,date:now} for i in kit.pool[to][from].subscriber
+			kit.pool[to][from] =
 				lastUpdate: now
 				subscriber: []
 			res.sendStatus 200

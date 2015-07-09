@@ -14,11 +14,21 @@ LoginDialog = React.createClass
 			data:
 				username: @state.username
 				password: @state.password
-			success: (data) ->
-				@props.onLoginSuccess "Welcome #{data}", "OK"
+			success: (res) =>
+				@props.onLoginSuccess res
 				@dismiss()
-			error: (a,b,c) ->
-				@props.onLoginError "SomeThing Wroung", "Gotcha"
+			error: (res) =>
+				switch res.status
+					when 400
+						@props.onLoginError "invalid input"
+					when 403
+						@props.onLoginError "password incorrect!"
+					when 404
+						@props.onLoginError "user not exist!"
+					when 500
+						@props.onLoginError "Server error, refreshing might help"
+					else
+						@props.onLoginError "Unknown bug"
 
 	onUsernameChange: (e) ->
 		@setState username: e.target.value
@@ -47,13 +57,13 @@ LoginDialog = React.createClass
 			<mui.TextField
 				floatingLabelText="username"
 				onChange={@onUsernameChange}
-				errorText={if @state.username.length < 4 then "username too short"}
+				errorText={if not @state.username.length then "username cannot leave empty"}
 				/>
 
 			<mui.TextField
 				floatingLabelText="password"
 				onChange={@onPasswordChange}
-				errorText={if not @state.password.length then "password cannot be empty"}
+				errorText={if not @state.password.length then "password cannot leave empty"}
 				>
 				<input type="password" />
 			</mui.TextField>
@@ -132,19 +142,35 @@ SignupDialog = React.createClass
 		</mui.Dialog>
 
 module.exports = React.createClass
-	childContextTypes:
-		muiTheme: React.PropTypes.object
-	getChildContext: ->
-		muiTheme: ThemeManager.getCurrentTheme()
+	getInitialState: ->
+		snack:
+			message: ''
+			action: ''
+			onClick: => @refs.snack.dismiss()
 	onLoginClick: ->
 		@refs.loginDialog.show()
 	onSignupClick: ->
 		@refs.signupDialog.show()
+	onLoginSuccess: (username) ->
+		@setState snack: {message:"Welcome, #{username}",action:'OK',onClick:@refs.snack.dismiss}
+		@refs.snack.show()
+		@props.onLogin username
+	onLoginError: (info) ->
+		@setState snack: {message:info,action:'Gotcha',onClick:@refs.snack.dismiss}
+		@refs.snack.show()
 	render: ->
 		<div>
 			<mui.RaisedButton label="Log in" secondary onTouchTap={@onLoginClick}/>
 			<mui.RaisedButton label="Sign up" primary onTouchTap={@onSignupClick}/>
-			<LoginDialog ref="loginDialog"/>
+			<LoginDialog ref="loginDialog"
+				onLoginSuccess={@onLoginSuccess}
+				onLoginError={@onLoginError}
+				/>
 			<SignupDialog ref="signupDialog"/>
+			<mui.Snackbar ref="snack"
+				message={@state.snack.message}
+				action={@state.snack.action}
+				onActionTouchTap={@state.snack.onClick}
+				/>
 		</div>
 		
