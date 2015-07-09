@@ -8,7 +8,7 @@ module.exports = (index, kit) ->
 		return next kit.util.makeError 400, "query limit not valid", "LIMIT_INVALID" if not limit > 0
 		
 		a = username
-		b = req.session.userinfo._id
+		b = req.session.userinfo.username
 
 		query = {$or:[{from:a,to:b},{from:b,to:a}]}
 		d = new Date(date)

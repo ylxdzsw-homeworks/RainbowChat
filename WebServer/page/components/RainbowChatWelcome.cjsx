@@ -22,7 +22,22 @@ SignupDialog = React.createClass
 		repassword: ''
 
 	onSubmit: ->
-		console.log 'submit'
+		$.ajax
+			method: "POST"
+			url: "/user"
+			data:
+				username: @state.username
+				password: @state.password
+			header:
+				'Content-Type': 'Application/json'
+			success: (a,b,c) ->
+				console.log a
+				console.log b
+				console.log c
+			error: (a,b,c) ->
+				alert "fuck"
+
+
 
 	onUsernameChange: (e) ->
 		@setState username: e.target.value
@@ -52,7 +67,7 @@ SignupDialog = React.createClass
 				floatingLabelText="username"
 				onChange={@onUsernameChange}
 				hintText="cannot less than 4 letters"
-				errorText={if not @state.username.length >= 4 then "username too short"}
+				errorText={if @state.username.length < 4 then "username too short"}
 				/>
 
 			<mui.TextField
@@ -64,7 +79,7 @@ SignupDialog = React.createClass
 			</mui.TextField>
 
 			<mui.TextField
-				floatingLabelText="repassword"
+				floatingLabelText="reinput password"
 				onChange={@onRepasswordChange}
 				errorText={if @state.repassword isnt @state.password then "password not match"}
 				>

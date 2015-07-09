@@ -5,7 +5,7 @@ kit =
 	pool: {}
 
 module.exports = Index = {}
-
+Index.kit = kit
 (fs = require 'fs')
 	.readdirSync __dirname
 	.filter (x) -> x isnt 'index.js'
