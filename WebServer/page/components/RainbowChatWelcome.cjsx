@@ -14,12 +14,21 @@ LoginDialog = React.createClass
 			data:
 				username: @state.username
 				password: @state.password
-			success: (a,b,c) ->
-				console.log a
-				console.log b
-				console.log c
-			error: (a,b,c) ->
-				alert "fuck"
+			success: (res) =>
+				@props.onLoginSuccess res
+				@dismiss()
+			error: (res) =>
+				switch res.status
+					when 400
+						@props.onLoginError "invalid input"
+					when 403
+						@props.onLoginError "password incorrect!"
+					when 404
+						@props.onLoginError "user not exist!"
+					when 500
+						@props.onLoginError "Server error, refreshing might help"
+					else
+						@props.onLoginError "Unknown bug"
 
 	onUsernameChange: (e) ->
 		@setState username: e.target.value
@@ -30,6 +39,9 @@ LoginDialog = React.createClass
 	# Method
 	show: ->
 		@refs.dialog.show()
+
+	dismiss: ->
+		@refs.dialog.dismiss()
 
 	render: ->
 		<mui.Dialog
@@ -42,19 +54,19 @@ LoginDialog = React.createClass
 			ref="dialog"
 			modal>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="username"
 				onChange={@onUsernameChange}
-				errorText={if @state.username.length < 4 then "username too short"}
-				/>
+				errorText={if not @state.username.length then "username cannot leave empty"}
+				/></div>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="password"
 				onChange={@onPasswordChange}
-				errorText={if not @state.password.length then "password cannot be empty"}
+				errorText={if not @state.password.length then "password cannot leave empty"}
 				>
 				<input type="password" />
-			</mui.TextField>
+			</mui.TextField></div>
 
 		</mui.Dialog>
 
@@ -104,49 +116,61 @@ SignupDialog = React.createClass
 			ref="dialog"
 			modal>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="username"
 				onChange={@onUsernameChange}
 				hintText="cannot less than 4 letters"
 				errorText={if @state.username.length < 4 then "username too short"}
-				/>
+				/></div>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="password"
 				onChange={@onPasswordChange}
 				errorText={if not @state.password.length then "password cannot be empty"}
 				>
 				<input type="password" />
-			</mui.TextField>
+			</mui.TextField></div>
 
-			<mui.TextField
+			<div><mui.TextField
 				floatingLabelText="reinput password"
 				onChange={@onRepasswordChange}
 				errorText={if @state.repassword isnt @state.password then "password not match"}
 				>
 				<input type="password" />
-			</mui.TextField>
+			</mui.TextField></div>
 
 		</mui.Dialog>
 
 module.exports = React.createClass
-	childContextTypes:
-		muiTheme: React.PropTypes.object
-	getChildContext: ->
-		muiTheme: ThemeManager.getCurrentTheme()
+	getInitialState: ->
+		snack:
+			message: ''
+			action: ''
+			onClick: => @refs.snack.dismiss()
 	onLoginClick: ->
 		@refs.loginDialog.show()
 	onSignupClick: ->
 		@refs.signupDialog.show()
-	onLoginSubmit: (cb) ->
-		@refs.loginDialog.dismiss()
-	onSignupSubmit: (cb) ->
-		@refs.signupDialog.dismiss()
+	onLoginSuccess: (username) ->
+		@setState snack: {message:"Welcome, #{username}",action:'OK',onClick:@refs.snack.dismiss}
+		@refs.snack.show()
+		@props.onLogin username
+	onLoginError: (info) ->
+		@setState snack: {message:info,action:'Gotcha',onClick:@refs.snack.dismiss}
+		@refs.snack.show()
 	render: ->
 		<div>
 			<mui.RaisedButton label="Log in" secondary onTouchTap={@onLoginClick}/>
 			<mui.RaisedButton label="Sign up" primary onTouchTap={@onSignupClick}/>
-			<LoginDialog ref="loginDialog"/>
+			<LoginDialog ref="loginDialog"
+				onLoginSuccess={@onLoginSuccess}
+				onLoginError={@onLoginError}
+				/>
 			<SignupDialog ref="signupDialog"/>
+			<mui.Snackbar ref="snack"
+				message={@state.snack.message}
+				action={@state.snack.action}
+				onActionTouchTap={@state.snack.onClick}
+				/>
 		</div>
 		

@@ -3,11 +3,11 @@ mui   = require 'material-ui'
 ThemeManager = new mui.Styles.ThemeManager()
 
 module.exports = React.createClass
-	childContextTypes:
-		muiTheme: React.PropTypes.object
-	getChildContext: ->
-		muiTheme: ThemeManager.getCurrentTheme()
+	toggle: ->
+		@refs.sidepanel.toggle()
 	render: ->
-		<mui.AppBar title="RainbowChat"
-			iconElementLeft={<i className="material-icons">menu</i>}
-			onLeftIconButtonTouchTap={->console.log 'fuck'}/>
+		<mui.LeftNav header={<h2>Rainbow Chat</h2>}
+			menuItems={@props.menuItems}
+			docked={false}
+			ref="sidepanel"
+			/>
