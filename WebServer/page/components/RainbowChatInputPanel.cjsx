@@ -16,15 +16,13 @@ module.exports = React.createClass
 			method: 'POST'
 			url: '/msg'
 			data:
-				to: 'fuck'
+				to: @props.currentChatter
 				type: 'chat'
 				content: @state.userinput
 			success: (a,b,c) ->
 				console.log a
-				console.log b
-				console.log c
 			error: (a,b,c) ->
-				alert 'fuck'
+				alert "failed"
 	render: ->
 		<div>
 			<mui.TextField

@@ -95,6 +95,10 @@ App = React.createClass
 					@state.chatters[username].listening = no
 					@setState chatters: @state.chatters
 		setTimeout listen, 0
+	addChat: (chat) ->
+		x = @state.chatters
+		x[@state.currentChatter].message.push chat
+		@setState chatters: x
 	render: ->
 		<div>
 			<RainbowChatAppBar
@@ -107,7 +111,10 @@ App = React.createClass
 			<RainbowChatStartChatDialog ref="startchatdialog"
 				onSubmit={@startChat}
 				/>
-			<RainbowChatInputPanel />
+			<RainbowChatInputPanel ref='inputpanel'
+				currentChatter={@state.currentChatter}
+				onSend={@addChat}
+				/>
 			<RainbowChatChatPanel ref='chatpanel'
 				message={@state.chatters[@state.currentChatter]?.message ? []}
 				/>
