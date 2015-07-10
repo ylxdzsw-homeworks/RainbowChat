@@ -88,7 +88,7 @@ SignupDialog = React.createClass
 				console.log b
 				console.log c
 			error: (a,b,c) ->
-				alert "fuck"
+				alert "failed"
 
 
 
