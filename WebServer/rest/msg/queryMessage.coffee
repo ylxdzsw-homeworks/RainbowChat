@@ -1,6 +1,9 @@
 module.exports = (index, kit) ->
 	(req, res, next) ->
 		{username,limit,date} = req.query
+		console.log username
+		console.log limit
+		console.log date
 		return next kit.util.makeError 400, "query messages while not provide username", "USERNAME_REQUIRED" if not username?
 
 		limit ?= 100
@@ -9,7 +12,7 @@ module.exports = (index, kit) ->
 		
 		a = username
 		b = req.session.userinfo.username
-
+		console.log b
 		query = {$or:[{from:a,to:b},{from:b,to:a}]}
 		d = new Date(date)
 		query.date = {$gt:d} if d.valueOf() is d.valueOf() # a trick to judge NaN, as NaN !== NaN
